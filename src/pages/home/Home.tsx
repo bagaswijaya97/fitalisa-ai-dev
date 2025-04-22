@@ -42,7 +42,7 @@ const Home = () => {
           </section>
         )}
         {!isFirstLoad && (
-          <section className="w-full flex items-center justify-center max-w-[800px] px-8 ">
+          <section className="w-full flex items-center justify-center max-w-[800px] px-5 ">
             <ChatBox messages={messages} />
           </section>
         )}
@@ -50,7 +50,7 @@ const Home = () => {
         <div
           className={`${
             isFirstLoad ? "mt-10" : "fixed bottom-0 left-0 pb-10"
-          } bg-[#212121] flex flex-col items-center justify-center gap-6 w-full px-8`}
+          } bg-[#212121] flex flex-col items-center justify-center gap-6 w-full px-5`}
         >
           <div
             className="relative pb-14 p-5 bg-[#343434] -mt-5
