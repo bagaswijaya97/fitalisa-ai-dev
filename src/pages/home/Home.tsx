@@ -81,7 +81,7 @@ const Home = () => {
               rows={1}
               onPaste={handlePaste}
               placeholder="Ask anything"
-              className="outline-0 resize-none overflow-hidden text-[16px] transition-all duration-200  w-full focus:outline-0 bg-transparent placeholder:text-[#a3a3a3]"
+              className="outline-none focus:outline-none min-h-[30px] resize-none overflow-hidden text-[16px] transition-all duration-200  w-full bg-transparent placeholder:text-[#a3a3a3]"
             />
             <ArrowUp
               onClick={() => {

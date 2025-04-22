@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { CheckCheck, CheckCheckIcon, CheckCircle, CheckCircle2, CheckSquare, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { list_engine } from "../../constants";
 
@@ -43,14 +43,17 @@ const Dropdown = ({
           <ul className="px-1 py-1 text-xs">
             {list_engine.map((item, i) => {
               return (
-                <li 
-                key={i} 
-                onClick={() => {
-                  setEngine(i);
-                  setIsOpen(false);
-                }}
-                className="px-4 py-2 rounded-lg hover:bg-[#313131] cursor-pointer">
+                <li
+                  key={i}
+                  onClick={() => {
+                    setEngine(i);
+                    setIsOpen(false);
+                  }}
+                  className={`px-4 py-3 rounded-lg hover:bg-[#313131] cursor-pointer flex items-center justify-between`}>
                   {item.name}
+                  {engine_index == i && (
+                    <CheckCircle2 size={15} />
+                  )}
                 </li>
               );
             })}

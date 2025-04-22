@@ -3,7 +3,7 @@ import Home from "./pages/home/Home";
 
 function App() {
   return (
-    <main>
+    <main className="h-screen">
       <Home />
     </main>
   );

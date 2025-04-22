@@ -30,6 +30,10 @@ export const useHome = () => {
     if (e.key === "Enter" && query !== "") {
       setIsFirstLoad(false);
       e.preventDefault();
+      const textarea = textareaRef.current;
+      if(textarea) {
+        textarea.style.height = "30px";
+      }
       handleGetPrompt();
     }
   };
