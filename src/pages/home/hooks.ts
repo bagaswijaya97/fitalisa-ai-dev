@@ -28,7 +28,6 @@ export const useHome = () => {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && query !== "") {
-      setIsFirstLoad(false);
       e.preventDefault();
       const textarea = textareaRef.current;
       if(textarea) {
@@ -58,6 +57,8 @@ export const useHome = () => {
   }, [image]);
 
   const handleGetPrompt = async () => {
+
+    setIsFirstLoad(false);
     const userMessage: MessageType = {
       id: crypto.randomUUID(),
       isUser: true,
