@@ -1,11 +1,17 @@
 import "./App.css";
 import Home from "./pages/home/Home";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import TestingPage from "./pages/test/TestingPage";
+import TestPage from "./pages/test/TestPage";
 
 function App() {
   return (
-    <main className="h-screen">
-      <Home />
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/test" element={<TestingPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
