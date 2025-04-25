@@ -30,7 +30,7 @@ export const useHome = () => {
     if (e.key === "Enter" && query !== "") {
       e.preventDefault();
       const textarea = textareaRef.current;
-      if(textarea) {
+      if (textarea) {
         textarea.style.height = "30px";
       }
       handleGetPrompt();
@@ -50,14 +50,16 @@ export const useHome = () => {
     if (image) {
       objectUrl = URL.createObjectURL(image);
     }
-  
+
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
   }, [image]);
 
   const handleGetPrompt = async () => {
-
+    if (textareaRef.current) {
+      textareaRef.current.blur();
+    }
     setIsFirstLoad(false);
     const userMessage: MessageType = {
       id: crypto.randomUUID(),
@@ -83,7 +85,7 @@ export const useHome = () => {
       if (!image) {
         res = await fetch(
           engine == 0 ? `https://ftmobile.inhealth.co.id/gen-ai/api/FitalisaTextOnly?prompt=${query}` :
-          `https://ftmobile.inhealth.co.id/gen-ai/api/TextOnly?prompt=${query}`,
+            `https://ftmobile.inhealth.co.id/gen-ai/api/TextOnly?prompt=${query}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
