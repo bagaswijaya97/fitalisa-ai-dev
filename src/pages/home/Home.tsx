@@ -2,7 +2,6 @@ import ChatBox from "../../components/chat-box/ChatBox";
 import { ArrowUp, X } from "lucide-react";
 import { useHome } from "./hooks";
 import AttachButton from "../../components/attach-button/AttachButton";
-import { Fragment } from "react/jsx-runtime";
 import Dropdown from "../../components/dropdown/Dropdown";
 
 const Home = () => {
@@ -15,6 +14,7 @@ const Home = () => {
     handleKeyDown,
     handleGetPrompt,
     chatEndRef,
+    chatTopRef,
     image,
     setImage,
     handlePaste,
@@ -24,6 +24,7 @@ const Home = () => {
 
   return (
     <section className="bg-white">
+      <div ref={chatTopRef} />
       <h1 className="fixed bg-white border-b border-b-[#eeeeee] w-full font-semibold h-[60px] flex items-center justify-center text-xl">
         <Dropdown engine_index={engine_index} setEngine={setEngine}/>
       </h1>

@@ -14,6 +14,7 @@ export const useHome = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [messages, setMessages] = useState<MessageType[]>([]);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+  const chatTopRef = useRef<HTMLDivElement | null>(null);
   const [image, setImage] = useState<File | null>();
   const [engine, setEngine] = useState<number>(0);
 
@@ -37,12 +38,12 @@ export const useHome = () => {
     }
   };
 
-  const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length <= 2) {
+      chatTopRef.current?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   useEffect(() => {
@@ -140,6 +141,7 @@ export const useHome = () => {
 
   return {
     textareaRef,
+    chatTopRef,
     query,
     isFirstLoad,
     messages,
