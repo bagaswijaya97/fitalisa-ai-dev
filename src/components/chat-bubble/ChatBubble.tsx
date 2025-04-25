@@ -1,6 +1,5 @@
 import { Fragment, JSX, useEffect, useState } from "react";
 import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown'
 import { marked } from "marked";
 import Loading from "../loading/Loading";
 
@@ -9,7 +8,7 @@ interface ChatBubbleProps {
     delay?: number;
     isUser: boolean;
     isLoading?: boolean;
-    image?: File | null
+    image?: File | null;
 }
 
 type Word = { word: string; className: string }
@@ -26,17 +25,28 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLo
 
             const parsedBlocks: Block[] = []
 
-            const walk = (node: Node, tag = 'p', style = '') => {
+            const walk = (node: Node, tag = 'p', style = '', indexInList?: number) => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     const el = node as HTMLElement
                     const tagName = el.tagName.toLowerCase()
 
                     if (['p', 'li', 'h1', 'h2', 'h3'].includes(tagName)) {
                         const words: Word[] = []
+
+                        // If it's a numbered list, add "1.", "2." etc as a word
+                        if (tagName === 'li' && typeof indexInList === 'number') {
+                            words.push({ word: `${indexInList}.`, className: 'mr-1' })
+                        }
+
                         for (const child of Array.from(el.childNodes)) {
                             collectWords(child, '', words)
                         }
+
                         parsedBlocks.push({ tag: tagName, words })
+                    } else if (tagName === 'ul' || tagName === 'ol') {
+                        const isOrdered = tagName === 'ol'
+                        const listItems = Array.from(el.children).filter(child => child.tagName.toLowerCase() === 'li')
+                        listItems.forEach((li, idx) => walk(li, 'li', '', isOrdered ? idx + 1 : undefined))
                     } else {
                         for (const child of Array.from(el.childNodes)) {
                             walk(child, tag, style)
@@ -76,20 +86,19 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLo
         parseMarkdownToBlocks()
     }, [text])
 
-    let globalIndex = 0 // <- global index across all blocks and words
+    let globalIndex = 0
 
     return (
         <Fragment>
             {!isUser && !isLoading && (
                 <div
-                    className={`rounded-2xl whitespace-pre-wrap text-sm leading-relaxed h-fit
-        ${isUser ? 'bg-[#313131] py-3 px-4 text-white' : 'text-white'
-                        }`}
+                    className={`rounded-2xl ml-1 whitespace-pre-wrap text-sm leading-relaxed h-fit text-white`}
                 >
                     {blocks.map((block, i) => {
-                        const Tag = block.tag as keyof JSX.IntrinsicElements
+                        const Tag = block.tag === 'li' ? 'div' : (block.tag as keyof JSX.IntrinsicElements)
+
                         return (
-                            <Tag key={i} className="flex flex-wrap items-start mb-1">
+                            <Tag key={i} className={block.tag === 'li' ? 'ml-5 mb-2 flex flex-wrap items-start' : 'mb-1'}>
                                 {block.words.map((w, j) => {
                                     const wordIndex = globalIndex++
                                     return (
@@ -99,7 +108,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLo
                                             initial={{ opacity: 0, y: 0 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{
-                                                delay: wordIndex * (delay! / 1000),
+                                                delay: wordIndex * (delay / 1000),
                                                 duration: 0.25,
                                             }}
                                         >
