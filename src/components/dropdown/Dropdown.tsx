@@ -32,14 +32,14 @@ const Dropdown = ({
     <div className="relative inline-block text-left" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center gap-1 px-4 py-2 text-white rounded-md hover:bg-[#313131]"
+        className="flex items-center justify-center gap-1 px-4 py-2 rounded-md hover:bg-[#f7f7f7] transition-all"
       >
-        <span className="text-sm">{list_engine[engine_index].name}</span>
-        <ChevronDown size={15} className="mt-1" />
+        <span className="text-sm text-[#30A7DA]">{list_engine[engine_index].name}</span>
+        <ChevronDown size={15} className="mt-1 text-[#30A7DA]" />
       </button>
 
       {isOpen && (
-        <div className="absolute mt-2 w-48 bg-[#212121] border border-[#414141] rounded-xl shadow-lg z-10">
+        <div className="absolute mt-2 w-48 border border-[#eeeeee] bg-white rounded-xl shadow-lg z-10">
           <ul className="px-1 py-1 text-xs">
             {list_engine.map((item, i) => {
               return (
@@ -49,7 +49,7 @@ const Dropdown = ({
                     setEngine(i);
                     setIsOpen(false);
                   }}
-                  className={`px-4 py-3 rounded-lg hover:bg-[#313131] cursor-pointer flex items-center justify-between`}>
+                  className={`px-4 py-3 rounded-lg text-[#30A7DA] hover:bg-[#f3f2f2] cursor-pointer flex items-center justify-between`}>
                   {item.name}
                   {engine_index == i && (
                     <CheckCircle2 size={15} />

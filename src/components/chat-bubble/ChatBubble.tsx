@@ -92,13 +92,13 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLo
         <Fragment>
             {!isUser && !isLoading && (
                 <div
-                    className={`rounded-2xl ml-1 whitespace-pre-wrap text-sm leading-relaxed h-fit text-white`}
+                    className={`rounded-2xl whitespace-pre-wrap text-sm leading-relaxed h-fit text-black`}
                 >
                     {blocks.map((block, i) => {
                         const Tag = block.tag === 'li' ? 'div' : (block.tag as keyof JSX.IntrinsicElements)
 
                         return (
-                            <Tag key={i} className={block.tag === 'li' ? 'ml-5 mb-2 flex flex-wrap items-start' : 'mb-1'}>
+                            <Tag key={i} className={block.tag === 'li' ? 'ml-2 mb-2 flex flex-wrap items-start' : 'mb-1'}>
                                 {block.words.map((w, j) => {
                                     const wordIndex = globalIndex++
                                     return (
@@ -129,7 +129,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLo
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.2 }}
-                    className={`bg-[#313131] py-3 px-4 text-sm max-w-[300px] md:max-w-[420px] text-white rounded-2xl flex flex-wrap gap-x-1`}>
+                    className={`bg-[#eeeeee] py-3 px-4 text-sm max-w-[300px] md:max-w-[420px] rounded-2xl flex flex-wrap gap-x-1`}>
                     {image ? (
                         <div className="flex flex-col gap-3">
                             <img

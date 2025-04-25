@@ -23,8 +23,8 @@ const Home = () => {
   } = useHome();
 
   return (
-    <Fragment>
-      <h1 className="fixed border-b border-b-[#313131] w-full font-semibold h-[60px] flex items-center justify-center text-xl bg-[#212121]">
+    <section className="bg-white">
+      <h1 className="fixed bg-white border-b border-b-[#eeeeee] w-full font-semibold h-[60px] flex items-center justify-center text-xl">
         <Dropdown engine_index={engine_index} setEngine={setEngine}/>
       </h1>
       <section
@@ -42,7 +42,7 @@ const Home = () => {
           </section>
         )}
         {!isFirstLoad && (
-          <section className="w-full flex items-center justify-center max-w-[800px] px-5 ">
+          <section className="w-full flex items-center justify-center px-5 md:max-w-[780px]">
             <ChatBox messages={messages} />
           </section>
         )}
@@ -50,10 +50,10 @@ const Home = () => {
         <div
           className={`${
             isFirstLoad ? "mt-10" : "fixed bottom-0 left-0 pb-10"
-          } bg-[#212121] flex flex-col items-center justify-center gap-6 w-full px-5`}
+          } bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
         >
           <div
-            className="relative pb-14 p-5 bg-[#343434] -mt-5
+            className="relative pb-14 p-5 bg-[#f3f4f6] border-[#eeeeee] border -mt-5
                      w-full max-w-[740px] rounded-3xl min-h-[90px] focus:outline-0 text-sm placeholder:text-sm"
           >
             {image && (
@@ -96,7 +96,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </Fragment>
+    </section>
   );
 };
 
