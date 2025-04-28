@@ -1,5 +1,5 @@
 import ChatBox from "../../components/chat-box/ChatBox";
-import { ArrowUp, X } from "lucide-react";
+import { ArrowUp, Square, X } from "lucide-react";
 import { useHome } from "./hooks";
 import AttachButton from "../../components/attach-button/AttachButton";
 import Dropdown from "../../components/dropdown/Dropdown";
@@ -26,12 +26,11 @@ const Home = () => {
     <section className="bg-white">
       <div ref={chatTopRef} />
       <h1 className="fixed bg-white border-b border-b-[#eeeeee] w-full font-semibold h-[60px] flex items-center justify-center text-xl">
-        <Dropdown engine_index={engine_index} setEngine={setEngine}/>
+        <Dropdown engine_index={engine_index} setEngine={setEngine} />
       </h1>
       <section
-        className={`${
-          isFirstLoad ? "justify-center" : "justify-start"
-        } w-full flex flex-col items-center min-h-screen`}
+        className={`${isFirstLoad ? "justify-center" : "justify-start"
+          } w-full flex flex-col items-center min-h-screen`}
       >
         {isFirstLoad && (
           <section className="w-full flex items-center justify-center">
@@ -49,12 +48,11 @@ const Home = () => {
         )}
         <div ref={chatEndRef} />
         <div
-          className={`${
-            isFirstLoad ? "mt-10" : "fixed bottom-0 left-0 pb-10"
-          } bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
+          className={`${isFirstLoad ? "mt-10" : "fixed bottom-0 left-0 pb-10"
+            } bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
         >
           <div
-            className="relative pb-14 p-5 bg-[#f3f4f6] border-[#eeeeee] border -mt-5
+            className="shadow-lg relative pb-14 p-5 bg-[#f3f4f6] border-[#ececec] border -mt-5
                      w-full max-w-[740px] rounded-3xl min-h-[90px] focus:outline-0 text-sm placeholder:text-sm"
           >
             {image && (
@@ -84,13 +82,29 @@ const Home = () => {
               placeholder="Ask anything"
               className="outline-none focus:outline-none min-h-[30px] resize-none overflow-hidden text-[16px] transition-all duration-200  w-full bg-transparent placeholder:text-[#a3a3a3]"
             />
-            <ArrowUp
-              onClick={() => {
-                handleGetPrompt();
-              }}
-              size={32}
-              className="cursor-pointer hover:bg-[#a9a9a9] transition-all duration-50 absolute right-3 bottom-3 text-black bg-white rounded-full p-2  shadow-md"
-            />
+            {messages.length >= 2 && messages[messages.length - 1].isLoading ?
+              (<>
+                <Square
+                  onClick={() => {
+                    handleGetPrompt();
+                  }}
+                  size={32}
+                  className={` bg-[#e8e8e8] transition-all duration-50 
+                absolute right-3 bottom-3 text-black rounded-full p-2  shadow-md`}
+                />
+              </>) : (
+                <> 
+                  <ArrowUp
+                    onClick={() => {
+                      handleGetPrompt();
+                    }}
+                    size={32}
+                    className={`cursor-pointer bg-white hover:bg-[#a9a9a9] transition-all duration-50 
+                absolute right-3 bottom-3 text-black rounded-full p-2  shadow-md`}
+                  />
+                </>)
+            }
+
             <div className="absolute left-3 bottom-2">
               <AttachButton onFileChange={setImage} />
             </div>

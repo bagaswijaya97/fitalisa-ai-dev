@@ -17,7 +17,23 @@ type Block = { tag: string; words: Word[] }
 const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLoading, image }) => {
     const [blocks, setBlocks] = useState<Block[]>([])
 
+    const [isAnimatingDone, setIsAnimatingDone] = useState(false);
+
     useEffect(() => {
+        if (blocks.length === 0) return; // don't do anything if blocks not ready
+
+        const totalWords = blocks.reduce((acc, block) => acc + block.words.length, 0);
+        const totalDuration = totalWords * (delay / 1000) + 0.5; // add small buffer
+
+        const timeout = setTimeout(() => {
+            setIsAnimatingDone(true);
+        }, totalDuration * 1000);
+
+        return () => clearTimeout(timeout);
+    }, [blocks, delay]);
+
+    useEffect(() => {
+        setIsAnimatingDone(false);
         const parseMarkdownToBlocks = async () => {
             const rawHtml = await marked.parse(text)
             const tempDiv = document.createElement('div')
@@ -101,21 +117,25 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLo
                             <Tag key={i} className={block.tag === 'li' ? 'ml-2 mb-2 flex flex-wrap items-start' : 'mb-1'}>
                                 {block.words.map((w, j) => {
                                     const wordIndex = globalIndex++
+                                    const Span = isAnimatingDone ? 'span' : motion.span
                                     return (
-                                        <motion.span
+                                        <Span
                                             key={j}
                                             className={w.className}
-                                            initial={{ opacity: 0, y: 0 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{
-                                                delay: wordIndex * (delay / 1000),
-                                                duration: 0.25,
-                                            }}
+                                            {...(!isAnimatingDone && {
+                                                initial: { opacity: 0, y: 0 },
+                                                animate: { opacity: 1, y: 0 },
+                                                transition: {
+                                                    delay: wordIndex * (delay / 1000),
+                                                    duration: 0.25,
+                                                }
+                                            })}
                                         >
                                             {w.word}
-                                        </motion.span>
+                                        </Span>
                                     )
                                 })}
+
                             </Tag>
                         )
                     })}
