@@ -33,7 +33,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLo
     }, [blocks, delay]);
 
     useEffect(() => {
-        setIsAnimatingDone(false);
+        setIsAnimatingDone(false)
         const parseMarkdownToBlocks = async () => {
             const rawHtml = await marked.parse(text)
             const tempDiv = document.createElement('div')
