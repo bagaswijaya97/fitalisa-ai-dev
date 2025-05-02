@@ -1,4 +1,4 @@
-import { Upload } from 'lucide-react'
+import { Image, Upload } from 'lucide-react'
 import { useRef } from 'react'
 
 const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => void }) => {
@@ -29,13 +29,12 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
             />
             <button
                 onClick={handleFileClick}
-                className="inline-flex gap-2 hover:bg-white hover:shadow-md transition-all p-2 items-center rounded-lg text-sm font-medium"
+                className="inline-flex gap-2 border rounded-full hover:bg-white hover:shadow-md transition-all p-1 items-center text-sm font-medium"
             >
-                <Upload
-                    size={15}
-                    className=""
+                <Image
+                    size={18}
+                    className="text-[#284F71]"
                 />
-                <h1 className='text-[12px]'>Attach Image</h1>
             </button>
         </div>
     )

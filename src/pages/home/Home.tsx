@@ -23,24 +23,14 @@ const Home = () => {
   } = useHome();
 
   return (
-    <section className="bg-white">
+    <section className="bg-white fixed inset-0 flex flex-col">
       <div ref={chatTopRef} />
-      <h1 className="fixed bg-white border-b border-b-[#eeeeee] w-full font-semibold h-[60px] flex items-center justify-center text-xl">
+      <h1 className="absolute top-4 left-4 font-semibold">
         <Dropdown engine_index={engine_index} setEngine={setEngine} />
       </h1>
       <section
-        className={`${isFirstLoad ? "justify-center" : "justify-start"
-          } w-full flex flex-col items-center min-h-screen`}
+        className={`flex-1 overflow-y-auto`}
       >
-        {isFirstLoad && (
-          <section className="w-full flex items-center justify-center">
-            <div className="flex flex-col items-center justify-center gap-6 w-full px-8">
-              <h1 className="font-semibold text-lg sm:text-2xl">
-                How can I help you today?
-              </h1>
-            </div>
-          </section>
-        )}
         {!isFirstLoad && (
           <section className="w-full flex items-center justify-center px-5 md:max-w-[780px]">
             <ChatBox messages={messages} />
@@ -48,11 +38,22 @@ const Home = () => {
         )}
         <div ref={chatEndRef} />
         <div
-          className={`${isFirstLoad ? "mt-10" : "fixed bottom-0 left-0 pb-10"
-            } bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
+          className={`absolute bottom-10 left-0 right-0 bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
         >
+          {isFirstLoad && (
+            <section className="w-full mb-5">
+              <div className="flex flex-col">
+                <img src="/images/livia.png" alt="" className="w-20" />
+                <h1 className="mt-3 bg-gradient-to-r text-transparent inline-block bg-clip-text from-[#2D7FCA] via-[#9C51DA] to-[#CB6E7A] font-semibold">
+                  <span className="text-lg sm:text-2xl">Hi, Aku Livia!</span>
+                  <br />
+                  <span className="text-[14px]">Kamu bisa tanya aku apa saja terkait <br />kesehatan, gizi, atau gaya hidup sehat.</span>
+                </h1>
+              </div>
+            </section>
+          )}
           <div
-            className="shadow-lg relative pb-14 p-5 bg-[#f3f4f6] border-[#ececec] border -mt-5
+            className="shadow-sm relative pb-14 p-5 bg-[#FBFCFF] border-[#ededed] border -mt-5
                      w-full max-w-[740px] rounded-3xl min-h-[90px] focus:outline-0 text-sm placeholder:text-sm"
           >
             {image && (
@@ -79,7 +80,7 @@ const Home = () => {
               onKeyDown={handleKeyDown}
               rows={1}
               onPaste={handlePaste}
-              placeholder="Ask anything"
+              placeholder="Tanya Livia"
               className="outline-none focus:outline-none min-h-[30px] resize-none overflow-hidden text-[16px] transition-all duration-200  w-full bg-transparent placeholder:text-[#a3a3a3]"
             />
             {messages.length >= 2 && messages[messages.length - 1].isLoading ?
@@ -93,16 +94,16 @@ const Home = () => {
                 absolute right-3 bottom-3 text-black rounded-full p-2  shadow-md`}
                 />
               </>) : (
-                <> 
+                <button
+                  onClick={handleGetPrompt}
+                  className="inline-flex absolute right-3 bottom-3 gap-2 border bg-[#284F71] rounded-full hover:bg-white hover:shadow-md transition-all p-1 items-center text-sm font-medium"
+                >
                   <ArrowUp
-                    onClick={() => {
-                      handleGetPrompt();
-                    }}
-                    size={32}
-                    className={`cursor-pointer bg-white hover:bg-[#a9a9a9] transition-all duration-50 
-                absolute right-3 bottom-3 text-black rounded-full p-2  shadow-md`}
+                    size={18}
+                    className="text-white"
                   />
-                </>)
+                </button>
+              )
             }
 
             <div className="absolute left-3 bottom-2">
