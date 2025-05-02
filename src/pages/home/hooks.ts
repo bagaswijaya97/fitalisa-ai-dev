@@ -17,6 +17,7 @@ export const useHome = () => {
   const chatTopRef = useRef<HTMLDivElement | null>(null);
   const [image, setImage] = useState<File | null>();
   const [engine, setEngine] = useState<number>(0);
+  const [token, setToken] = useState<string>('');
 
   const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = textareaRef.current;
@@ -73,7 +74,7 @@ export const useHome = () => {
     const loadingMessage: MessageType = {
       id: loadingId,
       isUser: false,
-      text: "...",
+      text: "asd",
       isLoading: true,
     };
 
@@ -84,14 +85,17 @@ export const useHome = () => {
     try {
       let res;
       if (!image) {
-        res = await fetch(
-          engine == 0 ? `https://ftmobile.inhealth.co.id/gen-ai/api/FitalisaTextOnly?prompt=${query}` :
-            `https://ftmobile.inhealth.co.id/gen-ai/api/TextOnly?prompt=${query}`,
+        res = await fetch(`https://ftmobile.inhealth.co.id/livia-ai/api/Gemini/text-only`,
           {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              prompt: query
+            })
+          })
       } else {
         const formData = new FormData();
         formData.append("file", image);
@@ -105,16 +109,17 @@ export const useHome = () => {
         );
       }
 
-      const data = await res.text(); // or `await res.json()` depending on your API
+      const data: any = await res.json(); // or `await res.json()` depending on your API
 
       setMessages((prev) =>
         prev.map((m) =>
           m.id === loadingMessage.id
-            ? { ...m, text: data, isLoading: false }
+            ? { ...m, text: data.data.html, isLoading: false }
             : m
         )
       );
-    } catch (err) {
+    }
+    catch (err) {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === loadingMessage.id
@@ -124,6 +129,8 @@ export const useHome = () => {
       );
     }
   };
+
+
 
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items;
@@ -138,6 +145,22 @@ export const useHome = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const getNewToken = async () => {
+      let res;
+      res = await fetch(`https://ftmobile.inhealth.co.id/livia-ai/api/AuthToken/SW5pIGFkYWxhaCBrdW5jaSByYWhhc2lhLCB5YW5nIHN1ZGFoIGRpIGVua3JpcHNpIG1lbmdndW5ha2FuIGJhc2U2NC4gVG9sb25nIGRpamFnYSBiYWlrLWJhaWsgeWFhLg==`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+      const data = await res.json();
+      setToken(data.data.token);
+    }
+    getNewToken();
+  }, [])
 
   return {
     textareaRef,

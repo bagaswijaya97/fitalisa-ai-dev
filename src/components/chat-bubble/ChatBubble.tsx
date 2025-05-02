@@ -15,130 +15,131 @@ type Word = { word: string; className: string }
 type Block = { tag: string; words: Word[] }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLoading, image }) => {
-    const [blocks, setBlocks] = useState<Block[]>([])
+    // const [blocks, setBlocks] = useState<Block[]>([])
 
-    const [isAnimatingDone, setIsAnimatingDone] = useState(false);
+    // const [isAnimatingDone, setIsAnimatingDone] = useState(false);
+
+    // useEffect(() => {
+    //     if (blocks.length === 0) return; // don't do anything if blocks not ready
+
+    //     const totalWords = blocks.reduce((acc, block) => acc + block.words.length, 0);
+    //     const totalDuration = totalWords * (delay / 1000) + 0.5; // add small buffer
+
+    //     const timeout = setTimeout(() => {
+    //         setIsAnimatingDone(true);
+    //     }, totalDuration * 1000);
+
+    //     return () => clearTimeout(timeout);
+    // }, [blocks, delay]);
+
+    // useEffect(() => {
+    //     setIsAnimatingDone(false)
+    //     const parseMarkdownToBlocks = async () => {
+    //         const rawHtml = await marked.parse(text)
+    //         const tempDiv = document.createElement('div')
+    //         tempDiv.innerHTML = rawHtml
+
+    //         const parsedBlocks: Block[] = []
+
+    //         const walk = (node: Node, tag = 'p', style = '', indexInList?: number) => {
+    //             if (node.nodeType === Node.ELEMENT_NODE) {
+    //                 const el = node as HTMLElement
+    //                 const tagName = el.tagName.toLowerCase()
+
+    //                 if (['p', 'li', 'h1', 'h2', 'h3'].includes(tagName)) {
+    //                     const words: Word[] = []
+
+    //                     // If it's a numbered list, add "1.", "2." etc as a word
+    //                     if (tagName === 'li' && typeof indexInList === 'number') {
+    //                         words.push({ word: `${indexInList}.`, className: 'mr-1' })
+    //                     }
+
+    //                     for (const child of Array.from(el.childNodes)) {
+    //                         collectWords(child, '', words)
+    //                     }
+
+    //                     parsedBlocks.push({ tag: tagName, words })
+    //                 } else if (tagName === 'ul' || tagName === 'ol') {
+    //                     const isOrdered = tagName === 'ol'
+    //                     const listItems = Array.from(el.children).filter(child => child.tagName.toLowerCase() === 'li')
+    //                     listItems.forEach((li, idx) => walk(li, 'li', '', isOrdered ? idx + 1 : undefined))
+    //                 } else {
+    //                     for (const child of Array.from(el.childNodes)) {
+    //                         walk(child, tag, style)
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         const collectWords = (node: Node, style = '', acc: Word[]) => {
+    //             if (node.nodeType === Node.TEXT_NODE) {
+    //                 const split = (node.textContent || '').split(/(\s+)/)
+    //                 split.forEach(word => {
+    //                     if (word) acc.push({ word, className: style })
+    //                 })
+    //             } else if (node.nodeType === Node.ELEMENT_NODE) {
+    //                 const el = node as HTMLElement
+    //                 const tag = el.tagName.toLowerCase()
+    //                 let nextStyle = style
+
+    //                 if (tag === 'strong' || tag === 'b') nextStyle += ' font-bold'
+    //                 if (tag === 'em' || tag === 'i') nextStyle += ' italic'
+    //                 if (tag === 'code') nextStyle += ' font-mono bg-gray-200 px-1 rounded'
+
+    //                 for (const child of Array.from(el.childNodes)) {
+    //                     collectWords(child, nextStyle, acc)
+    //                 }
+    //             }
+    //         }
+
+    //         for (const child of Array.from(tempDiv.childNodes)) {
+    //             walk(child)
+    //         }
+
+    //         setBlocks(parsedBlocks)
+    //     }
+
+    //     parseMarkdownToBlocks()
+    // }, [text])
+
+    // let globalIndex = 0
+
+
+    const [htmlContent, setHtmlContent] = useState<any>('');
+    const [loading, setLoading] = useState<boolean>(false);
+
+
 
     useEffect(() => {
-        if (blocks.length === 0) return; // don't do anything if blocks not ready
+        setLoading(true);
+        setHtmlContent('')
 
-        const totalWords = blocks.reduce((acc, block) => acc + block.words.length, 0);
-        const totalDuration = totalWords * (delay / 1000) + 0.5; // add small buffer
+        const html = text;
+        const tokens = html.split(/(\s+|<[^>]+>)/).filter(Boolean);
+        let index = 0;
+        let accumulated = '';
 
-        const timeout = setTimeout(() => {
-            setIsAnimatingDone(true);
-        }, totalDuration * 1000);
-
-        return () => clearTimeout(timeout);
-    }, [blocks, delay]);
-
-    useEffect(() => {
-        setIsAnimatingDone(false)
-        const parseMarkdownToBlocks = async () => {
-            const rawHtml = await marked.parse(text)
-            const tempDiv = document.createElement('div')
-            tempDiv.innerHTML = rawHtml
-
-            const parsedBlocks: Block[] = []
-
-            const walk = (node: Node, tag = 'p', style = '', indexInList?: number) => {
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    const el = node as HTMLElement
-                    const tagName = el.tagName.toLowerCase()
-
-                    if (['p', 'li', 'h1', 'h2', 'h3'].includes(tagName)) {
-                        const words: Word[] = []
-
-                        // If it's a numbered list, add "1.", "2." etc as a word
-                        if (tagName === 'li' && typeof indexInList === 'number') {
-                            words.push({ word: `${indexInList}.`, className: 'mr-1' })
-                        }
-
-                        for (const child of Array.from(el.childNodes)) {
-                            collectWords(child, '', words)
-                        }
-
-                        parsedBlocks.push({ tag: tagName, words })
-                    } else if (tagName === 'ul' || tagName === 'ol') {
-                        const isOrdered = tagName === 'ol'
-                        const listItems = Array.from(el.children).filter(child => child.tagName.toLowerCase() === 'li')
-                        listItems.forEach((li, idx) => walk(li, 'li', '', isOrdered ? idx + 1 : undefined))
-                    } else {
-                        for (const child of Array.from(el.childNodes)) {
-                            walk(child, tag, style)
-                        }
-                    }
-                }
+        const interval = setInterval(() => {
+            accumulated += tokens[index];
+            setHtmlContent(accumulated);
+            index++;
+            if (index >= tokens.length) {
+                clearInterval(interval);
+                setLoading(false);
             }
-
-            const collectWords = (node: Node, style = '', acc: Word[]) => {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    const split = (node.textContent || '').split(/(\s+)/)
-                    split.forEach(word => {
-                        if (word) acc.push({ word, className: style })
-                    })
-                } else if (node.nodeType === Node.ELEMENT_NODE) {
-                    const el = node as HTMLElement
-                    const tag = el.tagName.toLowerCase()
-                    let nextStyle = style
-
-                    if (tag === 'strong' || tag === 'b') nextStyle += ' font-bold'
-                    if (tag === 'em' || tag === 'i') nextStyle += ' italic'
-                    if (tag === 'code') nextStyle += ' font-mono bg-gray-200 px-1 rounded'
-
-                    for (const child of Array.from(el.childNodes)) {
-                        collectWords(child, nextStyle, acc)
-                    }
-                }
-            }
-
-            for (const child of Array.from(tempDiv.childNodes)) {
-                walk(child)
-            }
-
-            setBlocks(parsedBlocks)
-        }
-
-        parseMarkdownToBlocks()
+        }, 5)
     }, [text])
-
-    let globalIndex = 0
 
     return (
         <Fragment>
             {!isUser && !isLoading && (
                 <div
-                    className={`rounded-2xl whitespace-pre-wrap text-sm leading-relaxed h-fit text-black`}
-                >
-                    {blocks.map((block, i) => {
-                        const Tag = block.tag === 'li' ? 'div' : (block.tag as keyof JSX.IntrinsicElements)
-
-                        return (
-                            <Tag key={i} className={block.tag === 'li' ? 'ml-2 mb-2 flex flex-wrap items-start' : 'mb-1'}>
-                                {block.words.map((w, j) => {
-                                    const wordIndex = globalIndex++
-                                    const Span = isAnimatingDone ? 'span' : motion.span
-                                    return (
-                                        <Span
-                                            key={j}
-                                            className={w.className}
-                                            {...(!isAnimatingDone && {
-                                                initial: { opacity: 0, y: 0 },
-                                                animate: { opacity: 1, y: 0 },
-                                                transition: {
-                                                    delay: wordIndex * (delay / 1000),
-                                                    duration: 0.25,
-                                                }
-                                            })}
-                                        >
-                                            {w.word}
-                                        </Span>
-                                    )
-                                })}
-
-                            </Tag>
-                        )
-                    })}
+                    className={`rounded-2xl whitespace-pre-wrap text-sm leading-relaxed h-fit text-black`}>
+                    <div className='text-base text-[14px] text-black
+             [&_ul]:list-disc [&_ul]:pl-5
+             [&_li]:list-item [&_li]:ml-4'
+                        dangerouslySetInnerHTML={{ __html: htmlContent }}
+                    />
                 </div>
             )}
             {!isUser && isLoading && (

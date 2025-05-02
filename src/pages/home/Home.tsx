@@ -38,7 +38,7 @@ const Home = () => {
         )}
         <div ref={chatEndRef} />
         <div
-          className={`absolute bottom-10 left-0 right-0 bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
+          className={`absolute bottom-12 left-0 right-0 bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
         >
           {isFirstLoad && (
             <section className="w-full mb-5">
@@ -50,12 +50,22 @@ const Home = () => {
                   <span className="text-[14px]">Kamu bisa tanya aku apa saja terkait <br />kesehatan, gizi, atau gaya hidup sehat.</span>
                 </h1>
               </div>
+              <div className="flex flex-col gap-2 mt-3">
+                <div className="flex gap-2 items-center">
+                  <span className="cursor-pointer border rounded-full text-[10px] py-1 px-2 border-[#8ABEEC] text-[#8ABEEC]">Tips Diet</span>
+                  <span className="cursor-pointer border rounded-full text-[10px] py-1 px-2 border-[#8ABEEC] text-[#8ABEEC]">Olahraga Pagi</span>
+                  <span className="cursor-pointer border rounded-full text-[10px] py-1 px-2 border-[#8ABEEC] text-[#8ABEEC]">Kurangi Gula</span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <span className="cursor-pointer border rounded-full text-[10px] py-1 px-2 border-[#8ABEEC] text-[#8ABEEC]">Manajemen Stress</span>
+                  <span className="cursor-pointer border rounded-full text-[10px] py-1 px-2 border-[#8ABEEC] text-[#8ABEEC]">Tidur Berkualitas</span>
+                </div>
+              </div>
             </section>
           )}
           <div
-            className="shadow-sm relative pb-14 p-5 bg-[#FBFCFF] border-[#ededed] border -mt-5
-                     w-full max-w-[740px] rounded-3xl min-h-[90px] focus:outline-0 text-sm placeholder:text-sm"
-          >
+            className="shadow-sm relative pb-12 p-5 bg-[#FBFCFF] border-[#ededed] border -mt-5
+                     w-full max-w-[740px] rounded-3xl min-h-[90px] focus:outline-0 text-sm placeholder:text-sm">
             {image && (
               <div className="mb-2">
                 <div className="relative inline-block">
@@ -90,7 +100,7 @@ const Home = () => {
                     handleGetPrompt();
                   }}
                   size={32}
-                  className={` bg-[#e8e8e8] transition-all duration-50 
+                  className={`bg-[#e8e8e8] transition-all duration-50 
                 absolute right-3 bottom-3 text-black rounded-full p-2  shadow-md`}
                 />
               </>) : (
@@ -105,7 +115,6 @@ const Home = () => {
                 </button>
               )
             }
-
             <div className="absolute left-3 bottom-2">
               <AttachButton onFileChange={setImage} />
             </div>
