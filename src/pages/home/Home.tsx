@@ -37,7 +37,7 @@ const Home = () => {
         )}
         <div ref={chatEndRef} />
         <div
-          className={`absolute bottom-0 left-0 pb-14 right-0 bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
+          className={`absolute bottom-0 left-0 pb-7 right-0 bg-white flex flex-col items-center justify-center gap-6 w-full px-5`}
         >
           {isFirstLoad && (
             <section className="w-full mb-5">
