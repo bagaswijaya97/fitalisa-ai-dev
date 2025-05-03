@@ -134,10 +134,10 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 150, isUser, isLo
         <Fragment>
             {!isUser && !isLoading && (
                 <div
-                    className={`rounded-2xl whitespace-pre-wrap text-sm leading-relaxed h-fit text-black`}>
-                    <div className='text-base text-[14px] text-black
+                    className={`rounded-2xl text-sm leading-relaxed h-fit text-black`}>
+                    <div className='text-sm leading-relaxed text-black
              [&_ul]:list-disc [&_ul]:pl-5
-             [&_li]:list-item [&_li]:ml-4'
+             [&_li]:list-item [&_li]:ml-3'
                         dangerouslySetInnerHTML={{ __html: htmlContent }}
                     />
                 </div>

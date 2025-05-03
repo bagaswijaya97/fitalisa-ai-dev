@@ -17,7 +17,7 @@ export const useHome = () => {
   const chatTopRef = useRef<HTMLDivElement | null>(null);
   const [image, setImage] = useState<File | null>();
   const [engine, setEngine] = useState<number>(0);
-  const [token, setToken] = useState<string>('');
+  const [token, setToken] = useState<string>("");
 
   const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = textareaRef.current;
@@ -58,7 +58,7 @@ export const useHome = () => {
     };
   }, [image]);
 
-  const handleGetPrompt = async () => {
+  const handleGetPrompt = async (suggestion?: string) => {
     if (textareaRef.current) {
       textareaRef.current.blur();
     }
@@ -66,7 +66,7 @@ export const useHome = () => {
     const userMessage: MessageType = {
       id: crypto.randomUUID(),
       isUser: true,
-      text: query,
+      text: suggestion ? suggestion : query,
       image: image,
     };
 
@@ -74,7 +74,7 @@ export const useHome = () => {
     const loadingMessage: MessageType = {
       id: loadingId,
       isUser: false,
-      text: "asd",
+      text: "...",
       isLoading: true,
     };
 
@@ -85,41 +85,56 @@ export const useHome = () => {
     try {
       let res;
       if (!image) {
-        res = await fetch(`https://ftmobile.inhealth.co.id/livia-ai/api/Gemini/text-only`,
+        res = await fetch(
+          `https://ftmobile.inhealth.co.id/livia-ai/api/Gemini/text-only`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-              prompt: query
-            })
-          })
+              prompt: suggestion ? suggestion : query,
+            }),
+          }
+        );
+
+        const data: any = await res.json(); // or `await res.json()` depending on your API
+
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === loadingMessage.id
+              ? { ...m, text: data.data.html, isLoading: false }
+              : m
+          )
+        );
       } else {
         const formData = new FormData();
         formData.append("file", image);
+        formData.append("prompt", suggestion ? suggestion : query);
 
         res = await fetch(
-          `https://ftmobile.inhealth.co.id/gen-ai/api/TextAndImage?prompt=${query}`,
+          `https://ftmobile.inhealth.co.id/livia-ai/api/Gemini/text-and-image`,
           {
             method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
             body: formData,
           }
         );
+
+        const data: any = await res.json(); // or `await res.json()` depending on your API
+
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === loadingMessage.id
+              ? { ...m, image: image, text: data.data.html, isLoading: false }
+              : m
+          )
+        );
       }
-
-      const data: any = await res.json(); // or `await res.json()` depending on your API
-
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === loadingMessage.id
-            ? { ...m, text: data.data.html, isLoading: false }
-            : m
-        )
-      );
-    }
-    catch (err) {
+    } catch (err) {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === loadingMessage.id
@@ -129,8 +144,6 @@ export const useHome = () => {
       );
     }
   };
-
-
 
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const items = e.clipboardData.items;
@@ -149,18 +162,20 @@ export const useHome = () => {
   useEffect(() => {
     const getNewToken = async () => {
       let res;
-      res = await fetch(`https://ftmobile.inhealth.co.id/livia-ai/api/AuthToken/SW5pIGFkYWxhaCBrdW5jaSByYWhhc2lhLCB5YW5nIHN1ZGFoIGRpIGVua3JpcHNpIG1lbmdndW5ha2FuIGJhc2U2NC4gVG9sb25nIGRpamFnYSBiYWlrLWJhaWsgeWFhLg==`,
+      res = await fetch(
+        `https://ftmobile.inhealth.co.id/livia-ai/api/AuthToken/SW5pIGFkYWxhaCBrdW5jaSByYWhhc2lhLCB5YW5nIHN1ZGFoIGRpIGVua3JpcHNpIG1lbmdndW5ha2FuIGJhc2U2NC4gVG9sb25nIGRpamFnYSBiYWlrLWJhaWsgeWFhLg==`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
-        })
+        }
+      );
       const data = await res.json();
       setToken(data.data.token);
-    }
+    };
     getNewToken();
-  }, [])
+  }, []);
 
   return {
     textareaRef,
@@ -176,6 +191,6 @@ export const useHome = () => {
     setImage,
     handlePaste,
     engine_index: engine,
-    setEngine
+    setEngine,
   };
 };
