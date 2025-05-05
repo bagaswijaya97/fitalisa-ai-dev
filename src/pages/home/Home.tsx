@@ -34,7 +34,7 @@ const Home = () => {
           className={`flex-1 overflow-y-auto w-full flex flex-col items-center justify-start px-5`}
         >
           {!isFirstLoad && (
-            <section className="w-full flex items-center justify-center px-5 md:max-w-[780px]">
+            <section className="w-full flex items-center justify-center px-2 md:max-w-[780px]">
               <ChatBox messages={messages} />
             </section>
           )}
