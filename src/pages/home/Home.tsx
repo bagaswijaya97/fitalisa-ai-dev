@@ -124,9 +124,6 @@ const Home = () => {
               messages[messages.length - 1].isLoading ? (
                 <>
                   <Square
-                    onClick={() => {
-                      handleGetPrompt();
-                    }}
                     size={32}
                     className={`bg-[#e8e8e8] transition-all duration-50 
                 absolute right-3 bottom-3 text-black rounded-full p-2  shadow-md`}
