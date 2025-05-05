@@ -1,4 +1,4 @@
-import { CheckCheck, CheckCheckIcon, CheckCircle, CheckCircle2, CheckSquare, ChevronDown } from "lucide-react";
+import { CheckCircle2, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { list_engine } from "../../constants";
 
@@ -32,9 +32,9 @@ const Dropdown = ({
     <div className="relative inline-block " ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center gap-1 px-3 pl-4 py-1 rounded-2xl bg-[#E8EFF5] hover:bg-[#f7f7f7] transition-all"
+        className="flex items-center justify-center gap-1 px-3 pl-4 py-1 rounded-2xl bg-[#E8EFF5] transition-all"
       >
-        <span className="text-xs text-[#30A7DA]">{list_engine[engine_index].name}</span>
+        <span className="text-[16px] text-[#30A7DA]">{list_engine[engine_index].name}</span>
         <ChevronDown size={18} className="mt-[2px] text-[#30A7DA]" />
       </button>
 
@@ -51,7 +51,7 @@ const Dropdown = ({
                   }}
                   className={`px-3 py-2 rounded-lg text-[#30A7DA] hover:bg-[#f3f2f2] cursor-pointer flex items-center justify-between`}>
                   {item.name}
-                  {engine_index == i && (
+                  {engine_index === i && (
                     <CheckCircle2 size={15} />
                   )}
                 </li>
