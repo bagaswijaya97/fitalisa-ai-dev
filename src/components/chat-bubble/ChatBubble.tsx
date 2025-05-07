@@ -48,7 +48,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 20, isUser, isLoa
                 <Loading />
             )}
             {isUser && (
-                <motion.p
+                <motion.div
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.2 }}
@@ -67,7 +67,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ text, delay = 20, isUser, isLoa
                             {text}
                         </>
                     )}
-                </motion.p>
+                </motion.div>
             )}
         </Fragment>
     )

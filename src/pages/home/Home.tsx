@@ -21,6 +21,7 @@ const Home = () => {
     handlePaste,
     engine_index,
     setEngine,
+    fetchData
   } = useHome();
 
   return (

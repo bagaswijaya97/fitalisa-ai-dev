@@ -8,6 +8,14 @@ export interface MessageType {
   image?: File | null;
 }
 
+interface MyResponseType {
+  url: string;
+  options: RequestInit;
+  refreshTokenFn: () => Promise<string>;
+  tokenKey: string;
+  loadingMessage: MessageType
+}
+
 export const useHome = () => {
   const [query, setQuery] = useState<string>("");
   const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
@@ -82,66 +90,32 @@ export const useHome = () => {
     setQuery("");
     setImage(null);
 
-    try {
-      let res;
-      if (!image) {
-        res = await fetch(
-          `https://ftmobile.inhealth.co.id/livia-ai/api/Gemini/text-only`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              prompt: suggestion ? suggestion : query,
-            }),
-          }
-        );
+    let res;
+    if (!image) {
+      fetchData(
+        "https://ftmobile.inhealth.co.id/livia-ai/api/Gemini/text-only",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: suggestion ? suggestion : query, }),
+        },
+        loadingMessage);
+    } else {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("prompt", suggestion ? suggestion : query);
 
-        const data: any = await res.json(); // or `await res.json()` depending on your API
-
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === loadingMessage.id
-              ? { ...m, text: data.data.html, isLoading: false }
-              : m
-          )
-        );
-      } else {
-        const formData = new FormData();
-        formData.append("file", image);
-        formData.append("prompt", suggestion ? suggestion : query);
-
-        res = await fetch(
-          `https://ftmobile.inhealth.co.id/livia-ai/api/Gemini/text-and-image`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
-          }
-        );
-
-        const data: any = await res.json(); // or `await res.json()` depending on your API
-
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === loadingMessage.id
-              ? { ...m, image: image, text: data.data.html, isLoading: false }
-              : m
-          )
-        );
-      }
-    } catch (err) {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === loadingMessage.id
-            ? { ...m, text: "Something went wrong.", isLoading: false }
-            : m
-        )
-      );
+      fetchData(
+        "https://ftmobile.inhealth.co.id/livia-ai/api/Gemini/text-and-image",
+        {
+          method: "POST",
+          headers: {
+          },
+          body: formData,
+        },
+        loadingMessage);
     }
   };
 
@@ -159,23 +133,126 @@ export const useHome = () => {
     }
   };
 
-  useEffect(() => {
-    const getNewToken = async () => {
-      let res;
-      res = await fetch(
-        `https://ftmobile.inhealth.co.id/livia-ai/api/AuthToken/SW5pIGFkYWxhaCBrdW5jaSByYWhhc2lhLCB5YW5nIHN1ZGFoIGRpIGVua3JpcHNpIG1lbmdndW5ha2FuIGJhc2U2NC4gVG9sb25nIGRpamFnYSBiYWlrLWJhaWsgeWFhLg==`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await res.json();
-      setToken(data.data.token);
+  async function fetchWithAuthRetry<T>(
+    url: string,
+    options: RequestInit,
+    refreshTokenFn: () => Promise<string>,
+    loadingMessage: MessageType,
+    tokenKey: string = "auth_token"
+  ): Promise<T> {
+    // Get token from localStorage or regenerate if missing
+    let token = localStorage.getItem(tokenKey);
+
+    if (!token) {
+      token = await refreshTokenFn();
+      localStorage.setItem(tokenKey, token);
+    }
+
+    // Attach token to headers
+    const withAuth = {
+      ...options,
+      headers: {
+        ...options.headers,
+        Authorization: `Bearer ${token}`,
+      },
     };
-    getNewToken();
-  }, []);
+
+    try {
+      const res = await fetch(url, withAuth);
+
+      if (res.status === 401) throw new Error("Unauthorized");
+
+      if (!res.ok) {
+        throw new Error(`Fetch failed with status: ${res.status}`);
+      }
+
+      return await res.json();
+    } catch (err: any) {
+      // Handle token expiration
+      if (err.message === "Unauthorized") {
+        try {
+          const newToken = await refreshTokenFn();
+          console.log(newToken)
+          localStorage.setItem(tokenKey, newToken);
+
+          const retryOptions = {
+            ...options,
+            headers: {
+              ...options.headers,
+              Authorization: `Bearer ${newToken}`,
+            },
+          };
+
+          const retryRes = await fetch(url, retryOptions);
+          if (!retryRes.ok) {
+            throw new Error(`Retry failed with status: ${retryRes.status}`);
+          }
+
+          return await retryRes.json();
+        } catch (refreshErr) {
+          throw refreshErr;
+        }
+      } else {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === loadingMessage.id
+              ? { ...m, text: "Something went wrong.", isLoading: false }
+              : m
+          )
+        );
+        throw err;
+      }
+    }
+  }
+
+  const fetchData = async (url: string, headers: any, loadingMessage: MessageType) => {
+    const data: any = await fetchWithAuthRetry<MyResponseType>(
+      url,
+      headers,
+      async () => {
+        const res = await fetch(
+          `https://ftmobile.inhealth.co.id/livia-ai/api/AuthToken/SW5pIGFkYWxhaCBrdW5jaSByYWhhc2lhLCB5YW5nIHN1ZGFoIGRpIGVua3JpcHNpIG1lbmdndW5ha2FuIGJhc2U2NC4gVG9sb25nIGRpamFnYSBiYWlrLWJhaWsgeWFhLg==`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!res.ok) throw new Error("Failed to generate token");
+        const json = await res.json();
+        console.log(json)
+        return json.data.token;
+      },
+      loadingMessage
+    );
+    setMessages((prev) =>
+      prev.map((m) =>
+        m.id === loadingMessage.id
+          ? { ...m, image: image, text: data.data.html, isLoading: false }
+          : m
+      )
+    );
+  };
+
+
+  // useEffect(() => {
+  //   const getNewToken = async () => {
+  //     let res;
+  //     res = await fetch(
+  //       `https://ftmobile.inhealth.co.id/livia-ai/api/AuthToken/SW5pIGFkYWxhaCBrdW5jaSByYWhhc2lhLCB5YW5nIHN1ZGFoIGRpIGVua3JpcHNpIG1lbmdndW5ha2FuIGJhc2U2NC4gVG9sb25nIGRpamFnYSBiYWlrLWJhaWsgeWFhLg==`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     const data = await res.json();
+  //     setToken(data.data.token);
+  //   };
+  //   getNewToken();
+  // }, []);
 
   return {
     textareaRef,
@@ -192,5 +269,6 @@ export const useHome = () => {
     handlePaste,
     engine_index: engine,
     setEngine,
+    fetchData
   };
 };
