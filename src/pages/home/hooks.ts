@@ -66,6 +66,32 @@ export const useHome = () => {
     };
   }, [image]);
 
+  const [canDismiss, setCanDismiss] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (canDismiss && document.activeElement === textareaRef.current) {
+        textareaRef.current?.blur();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [canDismiss]);
+
+  const handleFocus = () => {
+    // Wait 300ms before enabling scroll-to-dismiss to avoid initial scroll firing
+    setCanDismiss(false);
+    setTimeout(() => setCanDismiss(true), 300);
+  };
+
+  const handleBlur = () => {
+    setCanDismiss(false);
+  };
+
   const handleGetPrompt = async (suggestion?: string) => {
     if (textareaRef.current) {
       textareaRef.current.blur();
@@ -269,6 +295,8 @@ export const useHome = () => {
     handlePaste,
     engine_index: engine,
     setEngine,
-    fetchData
+    fetchData,
+    handleFocus,
+    handleBlur
   };
 };

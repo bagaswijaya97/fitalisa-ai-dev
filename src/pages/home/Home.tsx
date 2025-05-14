@@ -21,7 +21,9 @@ const Home = () => {
     handlePaste,
     engine_index,
     setEngine,
-    fetchData
+    fetchData,
+    handleFocus,
+    handleBlur
   } = useHome();
 
   return (
@@ -116,6 +118,8 @@ const Home = () => {
                 onInput={handleInput}
                 value={query}
                 onKeyDown={handleKeyDown}
+                onFocus={handleFocus}
+                onBlur={handleFocus}
                 rows={1}
                 onPaste={handlePaste}
                 placeholder="Tanya Livia"
