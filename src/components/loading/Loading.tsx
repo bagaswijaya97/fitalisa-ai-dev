@@ -2,11 +2,15 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Loading = () => {
   return (
-    <div className="flex items-start w-44 -ml-16 -mt-5">
-      <DotLottieReact
-        src="https://lottie.host/dbb92e2a-860b-46a5-8e77-ac47092f4106/TpUhcDnFbV.lottie"
+    <div className="flex items-start w-44 -ml-7 -mt-7">
+      <video
+        src="/images/loading.webm" // your 60fps video
+        autoPlay
+        muted
         loop
-        autoplay
+        playsInline
+        className="w-20 h-auto"
+        style={{ display: 'block' }} // prevents default inline spacing
       />
     </div>
   );
