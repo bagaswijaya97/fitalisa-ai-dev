@@ -17,6 +17,7 @@
     "axios": "^1.8.4",
     "framer-motion": "^12.6.5",
     "html-react-parser": "^5.2.3",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.488.0",
     "marked": "^15.0.8",
     "react": "^19.1.0",

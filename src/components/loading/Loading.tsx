@@ -1,17 +1,11 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import Lottie from "lottie-react";
+import animationData from '../../constants/loading.json'
 
 const Loading = () => {
   return (
-    <div className="flex items-start w-44 -ml-7 -mt-7">
-      <video
-        src="/images/loading.webm" // your 60fps video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="w-20 h-auto"
-        style={{ display: 'block' }} // prevents default inline spacing
-      />
+    <div className="flex items-start w-20 -ml-7 -mt-9">
+      <Lottie animationData={animationData} loop autoplay />
     </div>
   );
 };
