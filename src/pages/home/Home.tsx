@@ -21,7 +21,6 @@ const Home = () => {
     handlePaste,
     engine_index,
     setEngine,
-    fetchData,
     handleFocus,
     handleBlur
   } = useHome();
