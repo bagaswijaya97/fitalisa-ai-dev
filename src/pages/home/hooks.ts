@@ -86,7 +86,12 @@ export const useHome = () => {
   };
 
   const handleGetPrompt = async (suggestion?: string) => {
+
     if (textareaRef.current) {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.style.height = "30px";
+      }
       textareaRef.current.blur();
     }
     setIsFirstLoad(false);
