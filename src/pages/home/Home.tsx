@@ -22,7 +22,7 @@ const Home = () => {
     engine_index,
     setEngine,
     handleFocus,
-    handleBlur
+    isLoading
   } = useHome();
 
   return (
@@ -114,6 +114,7 @@ const Home = () => {
               )}
               <textarea
                 ref={textareaRef}
+                disabled={isLoading}
                 onInput={handleInput}
                 value={query}
                 onKeyDown={handleKeyDown}

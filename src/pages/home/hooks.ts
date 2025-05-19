@@ -18,6 +18,7 @@ export const useHome = () => {
   const [image, setImage] = useState<File | null>();
   const [engine, setEngine] = useState<number>(0);
   const [token, setToken] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>();
 
   const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = textareaRef.current;
@@ -89,6 +90,7 @@ export const useHome = () => {
       textareaRef.current.blur();
     }
     setIsFirstLoad(false);
+    setIsLoading(true);
     const userMessage: MessageType = {
       id: crypto.randomUUID(),
       isUser: true,
@@ -127,6 +129,7 @@ export const useHome = () => {
 
         const data: any = await res.json(); // or `await res.json()` depending on your API
 
+        setIsLoading(false);
         setMessages((prev) =>
           prev.map((m) =>
             m.id === loadingMessage.id
@@ -152,6 +155,7 @@ export const useHome = () => {
 
         const data: any = await res.json(); // or `await res.json()` depending on your API
 
+        setIsLoading(false);
         setMessages((prev) =>
           prev.map((m) =>
             m.id === loadingMessage.id
@@ -161,6 +165,7 @@ export const useHome = () => {
         );
       }
     } catch (err) {
+      setIsLoading(false);
       setMessages((prev) =>
         prev.map((m) =>
           m.id === loadingMessage.id
@@ -219,6 +224,7 @@ export const useHome = () => {
     engine_index: engine,
     setEngine,
     handleFocus,
-    handleBlur
+    handleBlur,
+    isLoading
   };
 };
