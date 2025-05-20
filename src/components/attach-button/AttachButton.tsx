@@ -1,3 +1,4 @@
+import heic2any from 'heic2any';
 import { Image, Upload } from 'lucide-react'
 import { useRef } from 'react'
 
@@ -8,9 +9,28 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
     const handleFileClick = () => {
         inputRef.current?.click();
     };
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files?.[0]) {
-            onFileChange(e.target.files[0]);
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file && (file.type === "image/heic" || file.name.endsWith(".heic"))) {
+            console.log("masuk")
+            try {
+                // Convert to JPEG blob
+                const convertedBlob = await heic2any({
+                    blob: file,
+                    toType: "image/jpeg",
+                    quality: 0.8,
+                });
+
+                const newFile = new File([convertedBlob as Blob], file.name.replace(/\.heic$/i, ".jpeg"), {
+                    type: "image/jpeg",
+                  });
+                onFileChange(newFile);
+            } catch (err) {
+                console.error("HEIC conversion error:", err);
+            }
+
         }
 
         if (inputRef.current) {
