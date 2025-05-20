@@ -14,7 +14,6 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
         if (!file) return;
 
         if (file && (file.type === "image/heic" || file.name.endsWith(".heic"))) {
-            console.log("masuk")
             try {
                 // Convert to JPEG blob
                 const convertedBlob = await heic2any({
@@ -30,7 +29,8 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
             } catch (err) {
                 console.error("HEIC conversion error:", err);
             }
-
+        } else {
+            onFileChange(file);
         }
 
         if (inputRef.current) {
