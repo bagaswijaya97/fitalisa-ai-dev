@@ -1,6 +1,7 @@
 import heic2any from 'heic2any';
 import { Image, Upload } from 'lucide-react'
 import { useRef } from 'react'
+import { heicTo } from "heic-to"
 
 const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => void }) => {
 
@@ -17,16 +18,14 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
         if (file && (file.type === "image/heic" || file.type === "image/heif" || file.name.toLowerCase().endsWith(".heif") || file.name.endsWith(".heic"))) {
             console.log("heic heif")
             try {
-                // Convert to JPEG blob
-                const convertedBlob = await heic2any({
+                const jpeg = await heicTo({
                     blob: file,
-                    toType: "image/jpeg",
-                    quality: 0.8,
-                });
-
+                    type: "image/jpeg",
+                    quality: 0.5
+                  })
                 const newFileName = file.name.replace(/\.(heic|heif)$/i, ".jpeg");
 
-                const newFile = new File([convertedBlob as Blob], newFileName, {
+                const newFile = new File([jpeg as Blob], newFileName, {
                     type: "image/jpeg",
                 });
                 onFileChange(newFile);
