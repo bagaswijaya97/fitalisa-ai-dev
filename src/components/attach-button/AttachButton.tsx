@@ -12,8 +12,10 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+        console.log(file.type);
 
         if (file && (file.type === "image/heic" || file.name.endsWith(".heic"))) {
+            console.log("heic")
             try {
                 // Convert to JPEG blob
                 const convertedBlob = await heic2any({
@@ -30,6 +32,7 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
                 console.error("HEIC conversion error:", err);
             }
         } else {
+            console.log("bukan heic")
             onFileChange(file);
         }
 
