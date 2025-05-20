@@ -132,6 +132,11 @@ export const useHome = () => {
           }
         );
 
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || `HTTP ${res.status}`);
+        }
+
         const data: any = await res.json(); // or `await res.json()` depending on your API
 
         setIsLoading(false);
@@ -158,6 +163,11 @@ export const useHome = () => {
           }
         );
 
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || `HTTP ${res.status}`);
+        }
+
         const data: any = await res.json(); // or `await res.json()` depending on your API
 
         setIsLoading(false);
@@ -169,7 +179,8 @@ export const useHome = () => {
           )
         );
       }
-    } catch (err) {
+    } catch (err: any) {
+      console.error("API Error:", err.message || err);
       setIsLoading(false);
       setMessages((prev) =>
         prev.map((m) =>
