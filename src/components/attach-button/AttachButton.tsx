@@ -14,8 +14,8 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
         if (!file) return;
         console.log(file.type);
 
-        if (file && (file.type === "image/heic" || file.name.endsWith(".heic"))) {
-            console.log("heic")
+        if (file && (file.type === "image/heic" || file.type === "image/heif" || file.name.toLowerCase().endsWith(".heif") || file.name.endsWith(".heic"))) {
+            console.log("heic heif")
             try {
                 // Convert to JPEG blob
                 const convertedBlob = await heic2any({
@@ -24,9 +24,11 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
                     quality: 0.8,
                 });
 
-                const newFile = new File([convertedBlob as Blob], file.name.replace(/\.heic$/i, ".jpeg"), {
+                const newFileName = file.name.replace(/\.(heic|heif)$/i, ".jpeg");
+
+                const newFile = new File([convertedBlob as Blob], newFileName, {
                     type: "image/jpeg",
-                  });
+                });
                 onFileChange(newFile);
             } catch (err) {
                 console.error("HEIC conversion error:", err);
