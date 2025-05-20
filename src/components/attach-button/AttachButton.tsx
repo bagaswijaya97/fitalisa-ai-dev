@@ -73,7 +73,6 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
                     className="text-[#284F71]"
                 />
             </button>
-            <div onClick={() => saveFile(image)}> save file </div>
         </div>
     )
 }
