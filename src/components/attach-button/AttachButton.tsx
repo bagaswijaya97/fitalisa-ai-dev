@@ -1,11 +1,12 @@
 import heic2any from 'heic2any';
 import { Image, Upload } from 'lucide-react'
-import { useRef } from 'react'
-import { heicTo } from "heic-to"
+import { useRef, useState } from 'react'
+import { heicTo, isHeic } from "heic-to"
 
 const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => void }) => {
 
     const inputRef = useRef<HTMLInputElement>(null);
+    const [image, setImage] = useState<File | null>();
 
     const handleFileClick = () => {
         inputRef.current?.click();
@@ -22,7 +23,8 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
                     blob: file,
                     type: "image/jpeg",
                     quality: 0.5
-                  })
+                })
+
                 const newFileName = file.name.replace(/\.(heic|heif)$/i, ".jpeg");
 
                 const newFile = new File([jpeg as Blob], newFileName, {
@@ -33,14 +35,25 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
                 console.error("HEIC conversion error:", err);
             }
         } else {
-            console.log("bukan heic")
+            console.log(file.type);
             onFileChange(file);
+            setImage(file);
         }
 
         if (inputRef.current) {
             inputRef.current.value = '';
         }
     };
+
+    const saveFile = async (blob: any) => {
+        const a = document.createElement('a');
+        a.download = 'bagas';
+        a.href = URL.createObjectURL(blob);
+        a.addEventListener('click', (e) => {
+          setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
+        });
+        a.click();
+      };
 
     return (
         <div className='relative'>
@@ -60,6 +73,7 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
                     className="text-[#284F71]"
                 />
             </button>
+            <div onClick={() => saveFile(image)}> save file </div>
         </div>
     )
 }

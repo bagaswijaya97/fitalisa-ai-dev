@@ -97,13 +97,13 @@ export const useHome = () => {
     setIsFirstLoad(false);
     setIsLoading(true);
     const userMessage: MessageType = {
-      id: crypto.randomUUID(),
+      id: "1",
       isUser: true,
       text: suggestion ? suggestion : query,
       image: image,
     };
 
-    const loadingId = crypto.randomUUID();
+    const loadingId = "2";
     const loadingMessage: MessageType = {
       id: loadingId,
       isUser: false,
