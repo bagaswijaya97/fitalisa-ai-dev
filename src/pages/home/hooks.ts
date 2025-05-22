@@ -1,5 +1,5 @@
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
-
+import { saveAs } from "file-saver";
 export interface MessageType {
   id: string;
   text: string;
@@ -77,13 +77,7 @@ export const useHome = () => {
 
   const saveFile = async () => {
     if (image) {
-      const a = document.createElement('a');
-      a.download = 'bagas';
-      a.href = URL.createObjectURL(image);
-      a.addEventListener('click', (e) => {
-        setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
-      });
-      a.click();
+      saveAs(image, image.name)
     }
   };
 

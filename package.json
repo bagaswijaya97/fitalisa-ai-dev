@@ -15,6 +15,7 @@
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.2",
     "axios": "^1.8.4",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.6.5",
     "heic-convert": "^2.1.0",
     "heic-to": "^1.1.13",
@@ -56,6 +57,7 @@
     ]
   },
   "devDependencies": {
+    "@types/file-saver": "^2.0.7",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.1"
