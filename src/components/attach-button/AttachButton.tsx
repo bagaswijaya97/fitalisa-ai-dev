@@ -14,46 +14,45 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        console.log(file.type);
 
-        if (file && (file.type === "image/heic" || file.type === "image/heif" || file.name.toLowerCase().endsWith(".heif") || file.name.endsWith(".heic"))) {
-            console.log("heic heif")
-            try {
-                const jpeg = await heicTo({
-                    blob: file,
-                    type: "image/jpeg",
-                    quality: 0.5
-                })
+        // const name = file.name.toLowerCase();
+        // const isHEICName = name.endsWith(".heic") || name.endsWith(".heif");
+        // const isJPEGMime = file.type === "image/jpeg";
 
-                const newFileName = file.name.replace(/\.(heic|heif)$/i, ".jpeg");
+        // console.log(name);
+        // console.log(file.type);
 
-                const newFile = new File([jpeg as Blob], newFileName, {
-                    type: "image/jpeg",
-                });
-                onFileChange(newFile);
-            } catch (err) {
-                console.error("HEIC conversion error:", err);
-            }
-        } else {
-            console.log(file.type);
-            onFileChange(file);
-            setImage(file);
-        }
+
+        // if (file && (file.type === "image/heic" || file.type === "image/heif" || file.name.toLowerCase().endsWith(".heif") || file.name.endsWith(".heic"))) {
+        //     console.log("heic heif")
+        //     try {
+        //         const jpeg = await heicTo({
+        //             blob: file,
+        //             type: "image/jpeg",
+        //             quality: 0.5
+        //         })
+
+        //         const newFileName = file.name.replace(/\.(heic|heif)$/i, ".jpeg");
+
+        //         const newFile = new File([jpeg as Blob], newFileName, {
+        //             type: "image/jpeg",
+        //         });
+        //         onFileChange(newFile);
+        //     } catch (err) {
+        //         console.error("HEIC conversion error:", err);
+        //     }
+        // } else {
+        //     onFileChange(file);
+        //     setImage(file);
+        // }
+
+        onFileChange(file);
+        setImage(file);
 
         if (inputRef.current) {
             inputRef.current.value = '';
         }
     };
-
-    const saveFile = async (blob: any) => {
-        const a = document.createElement('a');
-        a.download = 'bagas';
-        a.href = URL.createObjectURL(blob);
-        a.addEventListener('click', (e) => {
-          setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
-        });
-        a.click();
-      };
 
     return (
         <div className='relative'>
