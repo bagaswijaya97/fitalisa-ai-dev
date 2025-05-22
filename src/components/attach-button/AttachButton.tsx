@@ -15,36 +15,37 @@ const AttachButton = ({ onFileChange }: { onFileChange: (file: File | null) => v
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // const name = file.name.toLowerCase();
-        // const isHEICName = name.endsWith(".heic") || name.endsWith(".heif");
-        // const isJPEGMime = file.type === "image/jpeg";
+        const name = file.name.toLowerCase();
+        const isHEICName = name.endsWith(".heic") || name.endsWith(".heif");
+        const isJPEGMime = file.type === "image/jpeg";
 
-        // console.log(name);
-        // console.log(file.type);
+        console.log(name);
+        console.log(isHEICName);
+        console.log(file.type);
 
 
-        // if (file && (file.type === "image/heic" || file.type === "image/heif" || file.name.toLowerCase().endsWith(".heif") || file.name.endsWith(".heic"))) {
-        //     console.log("heic heif")
-        //     try {
-        //         const jpeg = await heicTo({
-        //             blob: file,
-        //             type: "image/jpeg",
-        //             quality: 0.5
-        //         })
+        if (file && (file.type === "image/heic" || file.type === "image/heif" || file.name.toLowerCase().endsWith(".heif") || file.name.endsWith(".heic"))) {
+            console.log("heic heif")
+            try {
+                const jpeg = await heicTo({
+                    blob: file,
+                    type: "image/jpeg",
+                    quality: 0.5
+                })
 
-        //         const newFileName = file.name.replace(/\.(heic|heif)$/i, ".jpeg");
+                const newFileName = file.name.replace(/\.(heic|heif)$/i, ".jpeg");
 
-        //         const newFile = new File([jpeg as Blob], newFileName, {
-        //             type: "image/jpeg",
-        //         });
-        //         onFileChange(newFile);
-        //     } catch (err) {
-        //         console.error("HEIC conversion error:", err);
-        //     }
-        // } else {
-        //     onFileChange(file);
-        //     setImage(file);
-        // }
+                const newFile = new File([jpeg as Blob], newFileName, {
+                    type: "image/jpeg",
+                });
+                onFileChange(newFile);
+            } catch (err) {
+                console.error("HEIC conversion error:", err);
+            }
+        } else {
+            onFileChange(file);
+            setImage(file);
+        }
 
         onFileChange(file);
         setImage(file);

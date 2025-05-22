@@ -75,6 +75,18 @@ export const useHome = () => {
     };
   }, [canDismiss]);
 
+  const saveFile = async () => {
+    if (image) {
+      const a = document.createElement('a');
+      a.download = 'bagas';
+      a.href = URL.createObjectURL(image);
+      a.addEventListener('click', (e) => {
+        setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
+      });
+      a.click();
+    }
+  };
+
   const handleFocus = () => {
     // Wait 300ms before enabling scroll-to-dismiss to avoid initial scroll firing
     setCanDismiss(false);
@@ -241,6 +253,7 @@ export const useHome = () => {
     setEngine,
     handleFocus,
     handleBlur,
-    isLoading
+    isLoading,
+    saveFile
   };
 };
