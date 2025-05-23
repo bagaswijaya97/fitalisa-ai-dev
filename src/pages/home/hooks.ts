@@ -1,7 +1,7 @@
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { saveAs } from "file-saver";
 export interface MessageType {
-  id: string;
+  id: number;
   text: string;
   isUser: boolean;
   isLoading?: boolean;
@@ -103,15 +103,14 @@ export const useHome = () => {
     setIsFirstLoad(false);
     setIsLoading(true);
     const userMessage: MessageType = {
-      id: crypto.randomUUID(),
+      id: messages.length + 1,
       isUser: true,
       text: suggestion ? suggestion : query,
       image: image,
     };
 
-    const loadingId = crypto.randomUUID();
     const loadingMessage: MessageType = {
-      id: loadingId,
+      id: messages.length + 2,
       isUser: false,
       text: "...",
       isLoading: true,
