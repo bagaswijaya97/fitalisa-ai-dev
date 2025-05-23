@@ -4,7 +4,6 @@ import { useHome } from "./hooks";
 import AttachButton from "../../components/attach-button/AttachButton";
 import Dropdown from "../../components/dropdown/Dropdown";
 import { list_suggestions_1, list_suggestions_2 } from "../../constants";
-import heic2any from "heic2any";
 
 const Home = () => {
   const {
