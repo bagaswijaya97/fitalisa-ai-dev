@@ -1,9 +1,10 @@
 import ChatBox from "../../components/chat-box/ChatBox";
-import { ArrowUp, Square, X } from "lucide-react";
+import { ArrowUp, Info, Square, X } from "lucide-react";
 import { useHome } from "./hooks";
 import AttachButton from "../../components/attach-button/AttachButton";
 import Dropdown from "../../components/dropdown/Dropdown";
 import { list_suggestions_1, list_suggestions_2 } from "../../constants";
+import InfoDrawer from "../../components/drawer-info/InfoDrawer";
 
 const Home = () => {
   const {
@@ -23,16 +24,22 @@ const Home = () => {
     setEngine,
     handleFocus,
     isLoading,
-    saveFile
+    saveFile,
+    topics,
+    showModal,
+    toggleDrawer
   } = useHome();
 
   return (
     <section className="fixed inset-0 flex justify-center">
       <section className="relative w-full flex flex-col md:max-w-[740px] bg-white">
         <div ref={chatTopRef} />
-        <h1 className="absolute top-4 left-4 font-semibold">
+        <div className="absolute top-4 left-4 font-semibold flex items-center gap-3">
           <Dropdown engine_index={engine_index} setEngine={setEngine} />
-        </h1>
+          <Info className="text-[#509EE3] w-5" onClick={() => {
+            toggleDrawer();
+          }}/>
+        </div>
         <section
           className={`flex-1 overflow-y-auto w-full flex flex-col items-center justify-start px-5`}
         >
@@ -58,37 +65,19 @@ const Home = () => {
                     </span>
                   </h1>
                 </div>
-                <div className="flex flex-col gap-2 mt-4">
-                  <div className="flex gap-2 items-center">
-                    {list_suggestions_1.map((item, i) => {
-                      return (
-                        <span
-                          onClick={() => {
-                            handleGetPrompt(item);
-                          }}
-                          key={i}
-                          className="cursor-pointer border rounded-full text-sm py-1 px-2 border-[#8ABEEC] text-[#8ABEEC]"
-                        >
-                          {item}
-                        </span>
-                      );
-                    })}
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    {list_suggestions_2.map((item, i) => {
-                      return (
-                        <span
-                          onClick={() => {
-                            handleGetPrompt(item);
-                          }}
-                          key={i}
-                          className="cursor-pointer border rounded-full text-sm py-1 px-2 border-[#8ABEEC] text-[#8ABEEC]"
-                        >
-                          {item}
-                        </span>
-                      );
-                    })}
-                  </div>
+                <div className="flex flex-wrap gap-x-2 gap-y-3 max-w-fit mt-4">
+                  {topics && topics.map((topic, index) => (
+                    <div
+                      key={index}
+                      onClick={() => handleGetPrompt(topic)}
+                      className="text-center cursor-pointer border rounded-full text-xs py-1 px-2 border-[#8ABEEC] text-[#8ABEEC]"
+                      style={{
+                        flexBasis: index < 3 ? "auto" : "auto", // all items auto width
+                      }}
+                    >
+                      {topic}
+                    </div>
+                  ))}
                 </div>
               </section>
             )}
@@ -127,7 +116,7 @@ const Home = () => {
                 className="outline-none focus:outline-none min-h-[30px] resize-none overflow-hidden text-[16px] transition-all duration-200  w-full bg-transparent placeholder:text-[#a3a3a3]"
               />
               {messages.length >= 2 &&
-              messages[messages.length - 1].isLoading ? (
+                messages[messages.length - 1].isLoading ? (
                 <>
                   <Square
                     size={32}
@@ -152,6 +141,7 @@ const Home = () => {
           </div>
         </section>
       </section>
+      <InfoDrawer closeModal={toggleDrawer} modalActive={showModal} />
     </section>
   );
 };

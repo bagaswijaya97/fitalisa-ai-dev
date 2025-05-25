@@ -1,5 +1,6 @@
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { saveAs } from "file-saver";
+import { listTopics } from "../../constants";
 export interface MessageType {
   id: number;
   text: string;
@@ -19,6 +20,11 @@ export const useHome = () => {
   const [engine, setEngine] = useState<number>(0);
   const [token, setToken] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>();
+  const [topics, setTopics] = useState<string[]>();
+  const [showModal, setShowModal] = useState(false);
+  const toggleDrawer = () => {
+      setShowModal((prevState) => !prevState)
+  }
 
   const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = textareaRef.current;
@@ -211,6 +217,11 @@ export const useHome = () => {
     }
   };
 
+  function getRandomTopics(topics: string[], count = 5) {
+    const shuffled = [...topics].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
   useEffect(() => {
     const getNewToken = async () => {
       let res;
@@ -227,6 +238,8 @@ export const useHome = () => {
       setToken(data.data.token);
     };
     getNewToken();
+    const randomTopics = getRandomTopics(listTopics);
+    setTopics(randomTopics);
   }, []);
 
   return {
@@ -247,6 +260,9 @@ export const useHome = () => {
     handleFocus,
     handleBlur,
     isLoading,
-    saveFile
+    saveFile,
+    topics,
+    showModal,
+    toggleDrawer
   };
 };
