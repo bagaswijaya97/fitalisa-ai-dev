@@ -21,7 +21,9 @@ export default function InfoDrawer(props: InfoDrawerProps) {
             zIndex={9999}
         >
             <div className='relative'>
-                <X className='w-5 absolute top-2 right-3' />
+                <X className='w-5 absolute top-2 right-3' 
+                onClick={props.closeModal}
+                />
                 <h1 className='text-center border-b border-b-gray-200 font-bold text-sm p-3'>Tips Prompting</h1>
             </div>
             <div className='p-4'>
